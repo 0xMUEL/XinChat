@@ -7,28 +7,10 @@ class Server {
     static byte[] bytes = new byte[1000];
     
     public static void main(String[] args) throws IOException {
-        if (args.length == 7 && args[0].equals("-c") && args[1].equals("-h") && args[3].equals("-p")
-                && args[5].equals("-t")) {
-            // range check for port number
-            int portNum = Integer.parseInt(args[4]);
-            int time = Integer.parseInt(args[6]);
-            if (portNum < 1024 || portNum > 65535) {
-                System.out.println("Error: port number must be in the range 1024 to 65535");
-                System.exit(1);
-            }
-            // Enter client mode
-            launchClient(args[2], portNum, time);
-        } else if (args.length == 3 && args[0].equals("-s") && args[1].equals("-p")) {
-            // range check for port number
-            int portNum = Integer.parseInt(args[2]);
-            if (portNum < 1024 || portNum > 65535) {
-                System.out.println("Error: port number must be in the range 1024 to 65535");
-                return;
-            }
-            // Enter server mode
-            launchServer(portNum);
-        } else {
-            System.out.print("Error: invalid arguments");
+        if (args[1].equals("-c")) {
+            launchClient(args[1], 8888, "hello");
+        } else if (args[1].equals("-s")) {
+            launchServer(8888);
         }
     }
 
@@ -56,19 +38,15 @@ class Server {
         return;
     }
 
-    public static void launchClient(String hostname, int port, int time) {
-        long count = 0;
+    public static void launchClient(String hostname, int port, String content) {
         try {
             Socket soc = new Socket(hostname, port);
-            OutputStream out = soc.getOutputStream();
-
-            for (long stop=System.nanoTime()+TimeUnit.SECONDS.toNanos(time);stop>System.nanoTime();) {
-                out.write(bytes);
-                count++;
-            }
+            OutputStream outstream = soc.getOutputStream(); 
+            PrintWriter out = new PrintWriter(outstream);
+        
+            
+            out.print(content);
             soc.close();
-            double rate = (double)count*8/1000/time;
-            System.out.println("sent=" + count + " KB rate=" + String.format("%.3f", rate) + " Mbps");
         }catch (IOException e) {
             System.out.println("exception");
         }
