@@ -7,9 +7,9 @@ class Server {
     static byte[] bytes = new byte[1000];
     
     public static void main(String[] args) throws IOException {
-        if (args[1].equals("-c")) {
+        if (args[0].equals("-c")) {
             launchClient(args[1], 8888, "hello");
-        } else if (args[1].equals("-s")) {
+        } else if (args[0].equals("-s")) {
             launchServer(8888);
         }
     }
