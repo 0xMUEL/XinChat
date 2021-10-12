@@ -15,23 +15,15 @@ class Server {
     }
 
     public static void launchServer(int port) {
-        long count = 0;
-        long time = -1;
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             Socket clientSocket = serverSocket.accept();
             InputStream in = clientSocket.getInputStream();
-            // System.out.println("connected");
-            long start_time = System.nanoTime();
             byte[] temp_buf = new byte[1000];
-            int increment = 0;
-            while ((increment = in.read(temp_buf, 0, 1000)) != -1){
-                count += increment;
+            if (in.read(temp_buf, 0, 1000) != -1){
+                System.out.println(temp_buf);
             }
             serverSocket.close();
-            time = (System.nanoTime() - start_time) / 1000000000;
-            double rate = (double)count/1000000*8/time;
-            System.out.println("received=" + count/1000 + " KB rate=" + String.format("%.3f", rate) + " Mbps");
         }catch (IOException e) {
             System.out.println("exception");
         }
